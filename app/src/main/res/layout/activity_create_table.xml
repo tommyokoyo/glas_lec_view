@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    android:paddingTop="150dp"
+    tools:context=".CreateTable"
+    android:background="@color/colorBackground">
+
+    <com.google.android.material.textfield.TextInputLayout
+    android:id="@+id/databasename"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Database Name" android:textColorHint="@color/colorHintText"
+    app:hintTextColor="@color/colorButton"
+    android:focusedByDefault="true">
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/etdatabase"
+        android:inputType="text"
+        android:textColor="@color/colorTextInput"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tablename"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:layout_below="@+id/databasename"
+        android:hint="Table Name"
+        android:textColorHint="@color/colorHintText"
+        app:hintTextColor="@color/colorButton"
+        android:focusedByDefault="true">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ettablename"
+            android:inputType="textCapCharacters"
+            android:textColor="@color/colorTextInput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tablename"
+        android:layout_marginTop="62dp" />
+
+     <Button
+         android:id="@+id/submit"
+         android:backgroundTint="@color/colorButton"
+         android:textColor="@color/colorButtonText"
+         android:text="Submit"
+         android:layout_centerHorizontal="true"
+         android:layout_marginTop="40dp"
+         android:layout_width="250dp"
+         android:layout_below="@+id/progressBar"
+         android:layout_height="55dp"/>
+
+</RelativeLayout>

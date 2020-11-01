@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/logo"
         android:hint="Lecturer ID"
-        app:hintTextColor="@color/colorButton"
+        android:textColorHint="@color/colorHintText"
         android:focusedByDefault="true">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etlecid"
@@ -41,7 +41,7 @@
         android:layout_marginTop="10dp"
         android:layout_below="@id/layoutlecid"
         android:hint="Name"
-        app:hintTextColor="@color/colorButton">
+        android:textColorHint="@color/colorHintText">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etname"
             android:inputType="textPersonName"
@@ -57,7 +57,7 @@
         android:layout_marginTop="10dp"
         android:layout_below="@id/layoutname"
         android:hint="Password"
-        app:hintTextColor="@color/colorButton"
+        android:textColorHint="@color/colorHintText"
         app:passwordToggleEnabled="true">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etpassword"

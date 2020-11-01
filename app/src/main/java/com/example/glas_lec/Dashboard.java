@@ -11,7 +11,7 @@ public class Dashboard extends AppCompatActivity {
 
     CardView create_table;
     CardView add_students;
-    CardView view_table;
+    CardView add_location;
     CardView account;
 
 
@@ -22,12 +22,13 @@ public class Dashboard extends AppCompatActivity {
 
         create_table = findViewById(R.id.create_table);
         add_students = findViewById(R.id.add_student);
-        view_table = findViewById(R.id.view_table);
+        add_location = findViewById(R.id.add_location);
         account = findViewById(R.id.account);
 
         create_table.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(Dashboard.this, CreateTable.class));
 
             }
         });
@@ -39,9 +40,10 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-        view_table.setOnClickListener(new View.OnClickListener(){
+        add_location.setOnClickListener(new View.OnClickListener(){
             @Override
                     public void onClick(View v){
+                startActivity(new Intent( Dashboard.this, TakeCoordinates.class));
 
             }
         });
