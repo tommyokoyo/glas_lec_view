@@ -62,6 +62,9 @@ public class AccountActivity extends AppCompatActivity {
                 AlertDialog alertDialog = builder.create();
                 //show alert dialog
                 alertDialog.show();
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+
 
 
             }

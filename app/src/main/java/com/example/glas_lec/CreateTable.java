@@ -6,10 +6,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -30,23 +34,45 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.widget.AdapterView.*;
+
 public class CreateTable extends AppCompatActivity {
     private ProgressBar loading;
-    private EditText etdatabase, ettablename;
     private Button submit;
-
+    private Spinner database_spin;
+    private EditText ettablename;
+    private String year_of_study;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_table);
 
-        etdatabase = findViewById(R.id.etdatabase);
         ettablename = findViewById(R.id.ettablename);
+        database_spin = findViewById(R.id.database_spin);
         submit = findViewById(R.id.submit);
         loading = findViewById(R.id.progressBar);
 
-        //shows the alert dialog before going on
-        opendialogue();
+        alertdialog();
+
+        //create array adapter using string array and default spin layout
+        ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this,R.array.current_year, android.R.layout.simple_spinner_item);
+        //specify th layout to use when it appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //apply the adapter to the spinner
+        database_spin.setAdapter(adapter);
+
+        database_spin.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                year_of_study = parent.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,11 +82,36 @@ public class CreateTable extends AppCompatActivity {
         });
     }
 
+    private void alertdialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(CreateTable.this);
+        builder.setTitle("Table Name");
+        builder.setMessage("Write Table Name as:courseunit_Lesson\ne.g SCSB100_L1 ");
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+    }
+
+
     private void submitdata() {
+
         loading.setVisibility(View.VISIBLE);
         submit.setVisibility(View.GONE);
-        final String database = this.etdatabase.getText().toString().trim();
-        final String table_name = this.ettablename.getText().toString().trim();
+
+        final String database = year_of_study;
+        final String table_name = ettablename.getText().toString().trim();
+
+        if (TextUtils.isEmpty(table_name)){
+            ettablename.setError("Enter Table Name");
+            ettablename.requestFocus();
+            loading.setVisibility(View.GONE);
+            submit.setVisibility(View.VISIBLE);
+        }
 
         RequestQueue requestQueue = Volley.newRequestQueue(CreateTable.this);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_CREATETABLE, new Response.Listener<String>() {
@@ -71,8 +122,9 @@ public class CreateTable extends AppCompatActivity {
                     boolean error = object.getBoolean("error");
 
                     if (error == false){
-                        Toast.makeText(CreateTable.this,object.getString("message"),Toast.LENGTH_SHORT);
+                        Toast.makeText(CreateTable.this,object.getString("message"),Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(CreateTable.this,TakeCoordinates.class));
+                        finish();
                     }
                     //if error response
                     if(error==true) {
@@ -83,6 +135,8 @@ public class CreateTable extends AppCompatActivity {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    loading.setVisibility(View.GONE);
+                    submit.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -97,6 +151,7 @@ public class CreateTable extends AppCompatActivity {
                                 HttpHeaderParser.parseCharset(response.headers, "utf-8"));
                         // Now you can use any deserializer to make sense of data
                         JSONObject obj = new JSONObject(res);
+                        Toast.makeText(CreateTable.this,obj.getString(""),Toast.LENGTH_SHORT).show();
                     } catch (UnsupportedEncodingException e1) {
                         // Couldn't properly decode data to string
                         e1.printStackTrace();
@@ -126,23 +181,5 @@ public class CreateTable extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    private void opendialogue() {
-        //initilize dialog builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(CreateTable.this);
-        //set title
-        builder.setTitle("Insturctions");
-        //set message
-        builder.setMessage("Write database name as: Year_1/Year_2  \n Write table name as: unitname_No of lesson e.g SCSB100_Lesson1 ");
-        //set positive button
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
 
-            }
-        });
-        //initialize dialog
-        AlertDialog alertDialog = builder.create();
-        //show alert dialog
-        alertDialog.show();
-    }
 }

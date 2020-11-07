@@ -8,14 +8,19 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewStructure;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +43,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +54,8 @@ public class TakeCoordinates extends AppCompatActivity {
     private EditText ettablename;
     private ProgressBar progressBar;
     private TextView textlongitude, textlatitude, textlecid;
+    private Spinner database_spin;
+    private String year_of_study;
     private Button submit;
 
     @Override
@@ -60,6 +69,7 @@ public class TakeCoordinates extends AppCompatActivity {
         textlongitude = findViewById(R.id.longitude);
         textlatitude = findViewById(R.id.latitude);
         textlecid = findViewById(R.id.lecid);
+        database_spin = findViewById(R.id.database_spin);
         submit = findViewById(R.id.submit);
         progressBar = findViewById(R.id.progressBar);
 
@@ -69,6 +79,25 @@ public class TakeCoordinates extends AppCompatActivity {
         } else {
             getCurrentLocation();
         }
+
+        //create array adapter using string array and default spin layout
+        ArrayAdapter<CharSequence> adapter= ArrayAdapter.createFromResource(this,R.array.current_year, android.R.layout.simple_spinner_item);
+        //specify th layout to use when it appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //apply the adapter to the spinner
+        database_spin.setAdapter(adapter);
+
+        database_spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                year_of_study = parent.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +115,15 @@ public class TakeCoordinates extends AppCompatActivity {
         final String tablename = ettablename.getText().toString().trim();
         final String longitude = textlongitude.getText().toString().trim();
         final String latitude = textlatitude.getText().toString().trim();
-        final String lecid = textlecid.getText().toString().trim();
+        final String name = textlecid.getText().toString().trim();
+        final String database = year_of_study;
+
+        if (TextUtils.isEmpty(tablename)){
+            ettablename.setError("Enter table Name");
+            ettablename.requestFocus();
+            progressBar.setVisibility(View.GONE);
+            submit.setVisibility(View.VISIBLE);
+        }
 
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_STOREVALUES, new Response.Listener<String>() {
@@ -97,9 +134,13 @@ public class TakeCoordinates extends AppCompatActivity {
                     boolean error = object.getBoolean("error");
                     //if no error
                     if (error == false) {
-                        Toast.makeText(TakeCoordinates.this, object.getString("message"), Toast.LENGTH_SHORT);
+                        Toast.makeText(TakeCoordinates.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(TakeCoordinates.this, Dashboard.class));
+                        finish();
                     } else if (error == true) {
-                        Toast.makeText(TakeCoordinates.this, object.getString("message"), Toast.LENGTH_SHORT);
+                        Toast.makeText(TakeCoordinates.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                        submit.setVisibility(View.VISIBLE);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -135,12 +176,14 @@ public class TakeCoordinates extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
+                params.put("database", database);
                 params.put("table_name", tablename);
-                params.put("name", lecid);
+                params.put("name", name);
                 params.put("longitude", longitude);
                 params.put("latitude", latitude);
                 return params;
             }
+
 
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
@@ -165,6 +208,7 @@ public class TakeCoordinates extends AppCompatActivity {
     }
 
     private void getCurrentLocation() {
+        double lat;
         final LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(3000);
@@ -192,8 +236,26 @@ public class TakeCoordinates extends AppCompatActivity {
                     double latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
                     double longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
 
-                    textlongitude.setText(String.format("Longitude: %s", longitude));
-                    textlatitude.setText(String.format("Latitude %s", latitude));
+                    if (latitude > 0){
+                        DecimalFormat decimalFormat = new DecimalFormat("#.####");
+                        decimalFormat.setRoundingMode(RoundingMode.FLOOR);
+                        latitude = new Double(decimalFormat.format(latitude));
+                    } else {
+                        double result = latitude * 10000;
+                        latitude = (Math.ceil(result))/10000;
+
+                    }
+                     if (longitude > 0){
+                        DecimalFormat decimalFormat = new DecimalFormat("#.####");
+                        decimalFormat.setRoundingMode(RoundingMode.FLOOR);
+                        longitude = new Double(decimalFormat.format(longitude));
+                    }else{
+                         double result = longitude * 10000;
+                         longitude = (Math.ceil(result))/10000;
+                     }
+
+                    textlongitude.setText(String.format(String.valueOf(longitude)));
+                    textlatitude.setText(String.format(String.valueOf(latitude)));
                     textlecid.setText(String.format(sharedPrefManager.getLecID()));
                 }
 

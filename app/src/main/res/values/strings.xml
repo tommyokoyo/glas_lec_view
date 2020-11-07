@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">Glas_Lec</string>
+    <string-array name="current_year">
+        <item>Year_1</item>
+        <item>Year_2</item>
+        <item>Year_3</item>
+        <item>Year_4</item>
+    </string-array>
+    <string-array name="year_1_course">
+        <item>SCSB100</item>
+        <item>SCSB200</item>
+        <item>SCSB300</item>
+        <item>SCSB400</item>
+    </string-array>
+    <string-array name="year_2_course">
+        <item>SCSB500</item>
+        <item>SCSB600</item>
+        <item>SCSB700</item>
+        <item>SCSB800</item>
+    </string-array>
+    <string-array name="year_3_course">
+        <item>SCSB900</item>
+        <item>SCSB120</item>
+        <item>SCSB110</item>
+        <item>SCSB120</item>
+    </string-array>
+    <string-array name="year_4_course">
+        <item>SCSB130</item>
+        <item>SCSB140</item>
+        <item>SCSB150</item>
+        <item>SCSB160</item>
+    </string-array>
 </resources>

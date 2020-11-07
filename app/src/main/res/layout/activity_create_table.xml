@@ -11,29 +11,22 @@
     tools:context=".CreateTable"
     android:background="@color/colorBackground">
 
-    <com.google.android.material.textfield.TextInputLayout
-    android:id="@+id/databasename"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:hint="Database Name" android:textColorHint="@color/colorHintText"
-    app:hintTextColor="@color/colorButton"
-    android:focusedByDefault="true">
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/etdatabase"
-        android:inputType="text"
-        android:textColor="@color/colorTextInput"
+
+    <Spinner
+        android:id="@+id/database_spin"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</com.google.android.material.textfield.TextInputLayout>
+        android:layout_height="50dp"
+        android:hint="Database Name"
+        android:textColorHint="@color/colorHintText"
+        android:layout_marginTop="58dp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tablename"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="38dp"
-        android:layout_below="@+id/databasename"
+        android:layout_below="@+id/database_spin"
         android:hint="Table Name"
-        android:textColorHint="@color/colorHintText"
         app:hintTextColor="@color/colorButton"
         android:focusedByDefault="true">
         <com.google.android.material.textfield.TextInputEditText
